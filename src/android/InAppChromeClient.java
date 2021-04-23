@@ -34,6 +34,7 @@ import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.GeolocationPermissions.Callback;
+import android.webkit.PermissionRequest;
 
 public class InAppChromeClient extends WebChromeClient {
 
@@ -73,6 +74,12 @@ public class InAppChromeClient extends WebChromeClient {
     public void onGeolocationPermissionsShowPrompt(String origin, Callback callback) {
         super.onGeolocationPermissionsShowPrompt(origin, callback);
         callback.invoke(origin, true, false);
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void onPermissionRequest(PermissionRequest request) {
+        request.grant(request.getResources());
     }
 
     /**
@@ -131,7 +138,7 @@ public class InAppChromeClient extends WebChromeClient {
             }
             else {
                 // Anything else with a gap: prefix should get this message
-                LOG.w(LOG_TAG, "InAppBrowser does not support Cordova API calls: " + url + " " + defaultValue); 
+                LOG.w(LOG_TAG, "InAppBrowser does not support Cordova API calls: " + url + " " + defaultValue);
                 result.cancel();
                 return true;
             }
